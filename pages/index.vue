@@ -1,30 +1,18 @@
 <template>
   <div>
-    <div class="circle-container">
-      <canvas id="mainCircle" width="300" height="200"></canvas>
-      <canvas id="myCanvas2" width="300" height="200"></canvas>
-      <canvas id="myCanvas3" width="300" height="200"></canvas>
-      <canvas id="myCanvas4" width="300" height="200"></canvas>
-      <canvas id="myCanvas5" width="300" height="200"></canvas>
-
-
-
-
+    <div id="circle-container">
+      <canvas id="mainCircle" width="150" height="150"/>
+      <canvas id="firstSegment" width="150" height="150"/>
+      <canvas id="secondSegment" width="150" height="150"/>
+      <canvas id="thirdSegment" width="150" height="150"/>
+      <canvas id="fourthSegment" width="150" height="150"/>
     </div>
-    <canvas id="myCanvas6" width="300" height="200"></canvas>
-    <button @click="animate()">ANIMATE</button>
-
-    <!-- <div id="animacion">
-      <div class="animacion-box"></div>
-      <div class="animacion-box"></div>
-      <div class="animacion-box"></div>
-      <div class="animacion-box"></div>
-    </div> -->
   </div>
 </template>
 
 <script>
 const PI = Math.PI;
+const circunference = PI * 2;
 
 export default {
   data() {
@@ -33,148 +21,76 @@ export default {
       curr: 40,
       start: 40,
       finish: 80,
-      currentStep: 0,
-      segmentDegrees: 72
+      currentStep: 0
     }
   },
   methods: {
-    handleScroll(e) {
-      console.log(e.target.scrollTop);
-    },
+    animateSegment(segmentName, width, height, from, to, current, clockwise) {
+      let canvas = document.getElementById(segmentName);
+      let radius = (width /2) - 10;
+      let context = canvas.getContext('2d');
+      context.clearRect(0, 0, width, height);
+      context.beginPath();
+      context.strokeStyle = 'red';
+      context.arc(width / 2, width / 2, radius, from, to, clockwise);
+      context.stroke();
 
-    animateCircleSegment(to = 0) {
-      console.log(object)
-      var canvas = document.getElementById('myCanvas3');
-      var ctx = canvas.getContext('2d');
-      ctx.clearRect(0, 0, 300, 200);
-      ctx.beginPath();
-      ctx.strokeStyle = 'orange';
-      ctx.arc(150, 100, this.radius, this.start, draw_to, false);
-      ctx.stroke();
-
-      this.curr = this.curr + 1;
-      console.log(this.curr);
-      if (this.curr < this.finish + 1) {
+      current = current + 1;
+      if (current <= to) {
         requestAnimationFrame(() => {
-          // Math.PI * 2 es la circunferencia 360ª
-          this.animateCircleSegment(Math.PI * 2 * this.curr / 100);
+          this.animateSegment(segmentName, width, height, from, to, current, clockwise);
         });
       }
     },
     createAllCircles() {
-      createSegment('mainCircle', gray, 0, 360, false);
+      this.createSegment('mainCircle', 0, 360, false);
+      this.createSegment('firstSegment', 0, 72, false);
+      this.createSegment('secondSegment', 72, 144, false);
+      this.createSegment('thirdSegment', 144, 288, false);
+      this.createSegment('fourthSegment', 288, 360, false);
 
-
+      // this.createSegment('firstFinalSegment', 288, 72, false);
+      // this.createSegment('secondFinalSegment', 288, 72, true);
     },
-
-    createSegment(canvasName, color, from, to, clockwise) {
+    createSegment(canvasName, from, to, clockwise) {
       const canvas = document.getElementById(canvasName);
       const context = canvas.getContext('2d');
       let centerX = canvas.width / 2;
       let centerY = canvas.height / 2;
-      var radius = 70;
+      const radius = 70; //chequear esto
 
       context.beginPath();
-      context.arc(centerX, centerY, radius, from, to , clockwise);
+      context.arc(centerX, centerY, radius, this.getRadians(from), this.getRadians(to), clockwise);
       context.fillStyle = 'transparent';
       context.fill();
       context.lineWidth = 5;
-      context.strokeStyle = color;
+      context.strokeStyle = 'gray';
       context.stroke();
     },
     getRadians(degrees) {
       return(degrees * (PI / 180));
     }
-
   },
   mounted() {
-    //this.animateCircleSegment();
-
-    // var canvas2 = document.getElementById('myCanvas2');
-    // var context = canvas2.getContext('2d');
-    // var centerX = canvas2.width / 2;
-    // var centerY = canvas2.height / 2;
-    // var radius = 70;
-
-    // context.beginPath();
-    // context.arc(centerX, centerY, radius, 0, 1.25664, false);
-    // context.fillStyle = 'transparent';
-    // context.fill();
-    // context.lineWidth = 5;
-    // context.strokeStyle = 'red';
-    // context.stroke();
-
-    // var canvas3 = document.getElementById('myCanvas3');
-    // var context = canvas3.getContext('2d');
-    // var centerX = canvas3.width / 2;
-    // var centerY = canvas3.height / 2;
-    // var radius = 70;
-
-    // context.beginPath();
-    // context.arc(centerX, centerY, radius, 1.25664, 2.51327, false);
-    // context.fillStyle = 'transparent';
-    // context.fill();
-    // context.lineWidth = 5;
-    // context.strokeStyle = 'blue';
-    // context.stroke();
-
-    // var canvas4 = document.getElementById('myCanvas4');
-    // var context = canvas4.getContext('2d');
-    // var centerX = canvas4.width / 2;
-    // var centerY = canvas4.height / 2;
-    // var radius = 70;
-
-    // context.beginPath();
-    // context.arc(centerX, centerY, radius, 2.51327, 5.02655, false);
-    // context.fillStyle = 'transparent';
-    // context.fill();
-    // context.lineWidth = 5;
-    // context.strokeStyle = 'orange';
-    // context.stroke();
-
-    // var canvas5 = document.getElementById('myCanvas5');
-    // var context = canvas5.getContext('2d');
-    // var centerX = canvas5.width / 2;
-    // var centerY = canvas5.height / 2;
-    // var radius = 70;
-
-    // context.beginPath();
-    // context.arc(centerX, centerY, radius, 5.02655, 2 * Math.PI, false);
-    // context.fillStyle = 'transparent';
-    // context.fill();
-    // context.lineWidth = 5;
-    // context.strokeStyle = 'green';
-    // context.stroke();
-
-
-
-
-    // const el = document.getElementById('animacion');
-    // if(el){
-    //   el.addEventListener('scroll', this.handleScroll);
-    // }
-  },
-  destroyed() {
-    //el.removeEventListener('scroll', this.handleScroll);
+    // const container = document.getElementById('circle-container');
+    // console.log('height', container.clientHeight);
+    // console.log('width', container.offsetWidth);
+    this.createAllCircles();
+    this.animateSegment('firstSegment', '150px', '150px', 0, 72, 0, false);
   }
 }
 </script>
 
 <style>
-  .circle-container {
+  #circle-container {
     position: relative;
+    width: 150px;
+    height: 150px;
   }
 
-  #myCanvas, #myCanvas2, #myCanvas3, #myCanvas4, #myCanvas5  {
+  canvas  {
+    border: 1px solid;
     position: absolute;
     transform: rotate(-90deg);
   }
-
-  #myCanvas6 {
-    position: absolute;
-    right: 0;
-    transform: rotate(-90deg);
-  }
-
-
 </style>
