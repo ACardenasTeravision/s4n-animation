@@ -18,13 +18,30 @@ export default {
   data() {
     return {
       radius: 70,
-      curr: 40,
-      start: 40,
-      finish: 80,
+      curr: 0,
+      start: 0,
+      finish: 360,
       currentStep: 0
     }
   },
   methods: {
+    animateCircleSegment2(draw_to = 0) {
+      var canvas = document.getElementById('mainCircle');
+      var ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, 150, 150);
+      ctx.beginPath();
+      ctx.strokeStyle = 'orange';
+      ctx.arc(75, 75, 70, this.start, draw_to, false);
+      ctx.stroke();
+      this.curr = this.curr + 1;
+      console.log(this.curr);
+      if (this.curr < this.finish + 1) {
+        requestAnimationFrame(() => {
+          // Math.PI * 2 es la circunferencia 360ª
+          this.animateCircleSegment2(Math.PI * 2 * this.curr / 100);
+        });
+      }
+    },
     animateSegment(segmentName, width, height, from, to, current, clockwise) {
       let canvas = document.getElementById(segmentName);
       let radius = (width /2) - 10;
@@ -36,18 +53,20 @@ export default {
       context.stroke();
 
       current = current + 1;
-      if (current <= to) {
+      console.log((circunference * current) / 100);
+      if (current <= to + 1) {
         requestAnimationFrame(() => {
-          this.animateSegment(segmentName, width, height, from, to, current, clockwise);
+          //console.log((circunference * current) / 100);
+          //this.animateSegment(segmentName, width, height, from, to, (circunference * current) / 100, clockwise);
         });
       }
     },
     createAllCircles() {
       this.createSegment('mainCircle', 0, 360, false);
-      this.createSegment('firstSegment', 0, 72, false);
-      this.createSegment('secondSegment', 72, 144, false);
-      this.createSegment('thirdSegment', 144, 288, false);
-      this.createSegment('fourthSegment', 288, 360, false);
+      // this.createSegment('firstSegment', 0, 72, false);
+      // this.createSegment('secondSegment', 72, 144, false);
+      // this.createSegment('thirdSegment', 144, 288, false);
+      // this.createSegment('fourthSegment', 288, 360, false);
 
       // this.createSegment('firstFinalSegment', 288, 72, false);
       // this.createSegment('secondFinalSegment', 288, 72, true);
@@ -76,7 +95,8 @@ export default {
     // console.log('height', container.clientHeight);
     // console.log('width', container.offsetWidth);
     this.createAllCircles();
-    this.animateSegment('firstSegment', '150px', '150px', 0, 72, 0, false);
+    this.animateCircleSegment2();
+    //this.animateSegment('mainCircle', '150px', '150px', 0, 360, 0, false);
   }
 }
 </script>
