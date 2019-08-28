@@ -21,49 +21,41 @@ export default {
       curr: 0,
       start: 0,
       finish: 360,
-      currentStep: 0
+      currentStep: 0,
+      currentSegment: {
+        width: 0,
+        start: 0,
+        end: 72,
+      }
     }
   },
   methods: {
-    animateCircleSegment2(draw_to = 0) {
-      var canvas = document.getElementById('mainCircle');
-      var ctx = canvas.getContext('2d');
-      ctx.clearRect(0, 0, 150, 150);
+    animateCircleSegment3(segmentName, color, width, height, start, finish, draw_to) {
+      const canvas = document.getElementById(segmentName);
+      let centerX = width / 2;
+      let centerY = height / 2;
+      let radius = (width / 2) - 5;
+      console.log(radius);
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, width, height);
       ctx.beginPath();
-      ctx.strokeStyle = 'orange';
-      ctx.arc(75, 75, 70, this.start, draw_to, false);
-      ctx.stroke();
-      this.curr = this.curr + 1;
-      console.log(this.curr);
-      if (this.curr < this.finish + 1) {
-        requestAnimationFrame(() => {
-          // Math.PI * 2 es la circunferencia 360ª
-          this.animateCircleSegment2(Math.PI * 2 * this.curr / 100);
-        });
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 5;
+      if(!draw_to) {
+        draw_to = start;
       }
-    },
-    animateSegment(segmentName, width, height, from, to, current, clockwise) {
-      let canvas = document.getElementById(segmentName);
-      let radius = (width /2) - 10;
-      let context = canvas.getContext('2d');
-      context.clearRect(0, 0, width, height);
-      context.beginPath();
-      context.strokeStyle = 'red';
-      context.arc(width / 2, width / 2, radius, from, to, clockwise);
-      context.stroke();
+      ctx.arc(centerX, centerY, radius, start, draw_to, false);
+      ctx.stroke();
 
-      current = current + 1;
-      console.log((circunference * current) / 100);
-      if (current <= to + 1) {
+      if (draw_to < finish) {
         requestAnimationFrame(() => {
-          //console.log((circunference * current) / 100);
-          //this.animateSegment(segmentName, width, height, from, to, (circunference * current) / 100, clockwise);
+          this.animateCircleSegment3(segmentName, color, width, height, start, finish, draw_to + this.getRadians(2));
         });
       }
     },
     createAllCircles() {
       this.createSegment('mainCircle', 0, 360, false);
-      // this.createSegment('firstSegment', 0, 72, false);
+      //this.createSegment('firstSegment', 0, 72, false);
       // this.createSegment('secondSegment', 72, 144, false);
       // this.createSegment('thirdSegment', 144, 288, false);
       // this.createSegment('fourthSegment', 288, 360, false);
@@ -91,12 +83,9 @@ export default {
     }
   },
   mounted() {
-    // const container = document.getElementById('circle-container');
-    // console.log('height', container.clientHeight);
-    // console.log('width', container.offsetWidth);
     this.createAllCircles();
-    this.animateCircleSegment2();
-    //this.animateSegment('mainCircle', '150px', '150px', 0, 360, 0, false);
+    this.animateCircleSegment3('secondSegment', 'red', 150, 150, this.getRadians(0), this.getRadians(72));
+    setTimeout(() =>{ this.animateCircleSegment3('secondSegment', 'gray', 150, 150, this.getRadians(0), this.getRadians(72)) }, 5000);
   }
 }
 </script>
